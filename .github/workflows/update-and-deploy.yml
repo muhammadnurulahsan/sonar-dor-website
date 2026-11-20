@@ -1,0 +1,61 @@
+name: বাজুস দাম হালনাগাদ ও সাইট প্রকাশ
+
+on:
+  schedule:
+    - cron: "*/20 * * * *"     # প্রতি ২০ মিনিটে বাজুসের দাম যাচাই (GitHub কখনো কয়েক মিনিট দেরি করে)
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: bajus-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.bajus.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: বাজুসের দাম আনা
+        id: bajus
+        run: node scripts/update-bajus.mjs
+      - name: নতুন দাম সেভ করা
+        if: steps.bajus.outputs.changed == 'true'
+        run: |
+          git config user.name "sonar-dor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add assets/data/bajus.json
+          git commit -m "বাজুসের নতুন দাম $(TZ=Asia/Dhaka date '+%Y-%m-%d %H:%M')"
+          git push
+
+  deploy:
+    needs: update
+    if: needs.update.outputs.changed == 'true' || github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: সাইটের ফাইল আলাদা করা
+        run: |
+          mkdir _site
+          cp -r index.html 404.html assets manifest.webmanifest robots.txt sitemap.xml _site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>আজকের সোনার দাম: বাংলাদেশ ও লাইভ বিশ্ববাজার দর | সোনার দর</title>
+<meta name="description" content="আজ বাংলাদেশে ২২, ২১, ১৮ ক্যারেট ও সনাতন সোনার দাম (বাজুস), বিশ্ববাজারের লাইভ দাম, দাম বাড়বে নাকি কমবে তার সংকেত, আর গয়নার দাম হিসাবের ক্যালকুলেটর।">
+<meta name="theme-color" content="#FFFFFF">
+<meta property="og:type" content="website">
+<meta property="og:title" content="আজকের সোনার দাম | সোনার দর">
+<meta property="og:description" content="বাজুসের দাম, বিশ্ববাজারের লাইভ দাম আর দামের গতির সংকেত, এক জায়গায়।">
+<meta property="og:locale" content="bn_BD">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preload" href="assets/fonts/noto-sans-bengali.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://api.gold-api.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"বাংলাদেশে সোনার দাম কে ঠিক করে?","acceptedAnswer":{"@type":"Answer","text":"বাংলাদেশ জুয়েলার্স সমিতি (বাজুস) স্থানীয় বাজারে তেজাবি (খাঁটি) সোনার দাম ও বিশ্ববাজার দেখে দাম ঘোষণা করে।"}},
+{"@type":"Question","name":"এক ভরি কত গ্রাম?","acceptedAnswer":{"@type":"Answer","text":"এক ভরি ১১.৬৬৪ গ্রাম। এক ভরি = ১৬ আনা, এক আনা = ৬ রতি।"}},
+{"@type":"Question","name":"দাম বাড়বে নাকি কমবে, এই সংকেত কতটা নির্ভরযোগ্য?","acceptedAnswer":{"@type":"Answer","text":"এটি আগের দামের ধরন থেকে হিসাব করা একটি সংকেত, নিশ্চিত পূর্বাভাস নয়।"}}
+]}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">মূল অংশে যান</a>
+
+<div class="ticker" id="tk" data-state="loading" aria-label="বিশ্ববাজারের সংক্ষিপ্ত দর">
+  <div class="container num">
+    <span><span class="dot" aria-hidden="true"></span><span id="tkStatus">দাম আনা হচ্ছে…</span></span>
+    <span>সোনা (আউন্স) <b id="tkSpot">…</b> <span id="tkChg"></span></span>
+    <span class="sep" aria-hidden="true">|</span>
+    <span>ডলার <b id="tkFx">…</b></span>
+    <span class="sep" aria-hidden="true">|</span>
+    <span>২২ ক্যারেট (ভরি) <b id="tk22">…</b></span>
+  </div>
+</div>
+
+<header class="header">
+  <div class="container">
+    <a class="logo" href="./" aria-label="সোনার দর, প্রথম পাতা"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1A1D21"/><path d="M7 22h18l-2.6-6H9.6z" fill="#D9A93C"/><path d="M11.2 14.5h9.6l-1.8-4.5h-6z" fill="#E9C46A"/></svg><span>সোনার দর</span></a>
+    <nav class="nav" id="nav" aria-label="প্রধান মেনু"><a href="#dam">আজকের দাম</a><a href="#songket">বাজারের গতি</a><a href="#chart">চার্ট</a><a href="#itihas">দামের ইতিহাস</a><a href="#hisab">হিসাব</a><a href="#prosno">প্রশ্নোত্তর</a></nav>
+    <button class="btn menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="nav">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg>মেনু
+    </button>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <h1>আজকের সোনার দাম</h1>
+        <p class="date" id="todayDate"></p>
+
+        <div class="main-price">
+          <p class="label">২২ ক্যারেট হলমার্ক সোনা, প্রতি ভরি</p>
+          <div class="value num"><strong id="bd22">…</strong><span class="badge flat" id="bd22chg"></span></div>
+          <p class="meta" id="bajusMeta">সূত্র: বাংলাদেশ জুয়েলার্স সমিতি (বাজুস)</p>
+          <p class="estimate num" id="estimate"></p>
+        </div>
+
+        <div class="others num" aria-label="অন্যান্য মানের দাম, প্রতি ভরি">
+          <div><span>২১ ক্যারেট</span><b id="q21">…</b></div>
+          <div><span>১৮ ক্যারেট</span><b id="q18">…</b></div>
+          <div><span>সনাতন পদ্ধতি</span><b id="qtr">…</b></div>
+        </div>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#hisab">গয়নার দাম হিসাব করুন</a>
+          <a class="btn" href="#dam">গ্রাম ও আনার দাম দেখুন</a>
+        </div>
+      </div>
+
+      <aside class="card market" aria-labelledby="mk">
+        <div class="market-head">
+          <h2 id="mk">বিশ্ববাজার (স্পট)</h2>
+          <span class="live" id="live" data-state="loading" role="status" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="liveText">দাম আনা হচ্ছে…</span></span>
+        </div>
+        <p class="price num" id="spot" translate="no">…</p>
+        <p class="chg num" id="spotChg"></p>
+        <dl class="kv num">
+          <dt>প্রতি আউন্স</dt><dd>৩১.১০ গ্রাম</dd>
+          <dt>প্রতি গ্রাম</dt><dd id="spotGram">…</dd>
+          <dt>খাঁটি সোনা, প্রতি ভরি (টাকায়)</dt><dd id="spotBhori">…</dd>
+          <dt>১ মার্কিন ডলার</dt><dd id="fx">…</dd>
+        </dl>
+        <div class="market-foot">
+          <small id="nextUp">প্রতি মিনিটে আপডেট হয়</small>
+          <button class="btn" id="refreshBtn" type="button">
+            <svg id="refreshIco" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.5 10a6.5 6.5 0 1 1-1.9-4.6"/><path d="M16.5 3.5V7H13"/></svg>
+            <span class="spinner" id="refreshSpin" hidden aria-hidden="true"></span>
+            <span id="refreshLabel">রিফ্রেশ</span>
+          </button>
+        </div>
+        <p class="alert" id="alert" role="alert"></p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section alt" id="dam" aria-labelledby="h-dam">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="h-dam">ক্যারেট অনুযায়ী সোনার দাম</h2>
+          <p class="sub">বাজুস নির্ধারিত দাম ভরি, গ্রাম, আনা ও রতি হিসেবে। শেষ কলামে বিশ্ববাজার অনুযায়ী এখনকার আনুমানিক ভরির দাম।</p>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <caption class="sr-only">ক্যারেট অনুযায়ী সোনার দাম</caption>
+          <thead><tr><th scope="col">মান</th><th scope="col">প্রতি ভরি</th><th scope="col">প্রতি গ্রাম</th><th scope="col">প্রতি আনা</th><th scope="col">প্রতি রতি</th><th scope="col">আনুমানিক এখন (ভরি)</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p class="source" id="tableSource">দামে ৫% ভ্যাট ধরা আছে। মজুরি আলাদা, বাজুসের নিয়মে ন্যূনতম ৬%।</p>
+    </div>
+  </section>
+
+  <section class="section" id="songket" aria-labelledby="h-sg">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="h-sg">দাম বাড়বে নাকি কমবে?</h2>
+          <p class="sub">গত ৩০ দিনের দাম ও আজকের ওঠানামা থেকে কয়েকটি প্রচলিত সূচক মিলিয়ে আগামী কয়েক দিনের সম্ভাব্য গতি।</p>
+        </div>
+      </div>
+      <div class="signal-grid">
+        <div class="card verdict" aria-live="polite">
+          <p class="lbl">সামগ্রিক সংকেত</p>
+          <strong id="verdictText">হিসাব চলছে…</strong>
+          <p id="verdictSub">দামের ইতিহাস আসার অপেক্ষা</p>
+          <div class="scale" id="scale" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="scale-l" aria-hidden="true"><span>কমার দিকে</span><span>বাড়ার দিকে</span></div>
+          <div class="next" id="nextMove"><b>বাজুসের পরের সমন্বয়</b><p>হিসাব চলছে…</p></div>
+        </div>
+        <div>
+          <div class="table-wrap">
+            <table class="sig">
+              <thead><tr><th scope="col">সূচক</th><th scope="col" style="text-align:left">ব্যাখ্যা</th><th scope="col">সংকেত</th></tr></thead>
+              <tbody id="sigRows"><tr><td colspan="3" class="flat">হিসাব চলছে…</td></tr></tbody>
+            </table>
+          </div>
+          <p class="note">এটি আগের দামের ধরন থেকে হিসাব করা, নিশ্চিত পূর্বাভাস নয়। যুদ্ধ, সুদের হার বা ডলারের হঠাৎ পরিবর্তনে বাজার উল্টো দিকে যেতে পারে। কেনা-বেচার আগে নিজে যাচাই করুন।</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="chart" aria-labelledby="h-ch">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="h-ch">বিশ্ববাজারে দামের গতিপথ</h2>
+          <p class="sub" id="chartSub">ডলার প্রতি আউন্স। চার্টে আঙুল বা মাউস রাখলে টাকায় ভরির দামও দেখা যাবে।</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="সময়সীমা">
+          <button type="button" role="tab" data-range="today" aria-selected="false">আজ</button>
+          <button type="button" role="tab" data-range="7d" aria-selected="false">৭ দিন</button>
+          <button type="button" role="tab" data-range="30d" aria-selected="true">৩০ দিন</button>
+        </div>
+      </div>
+      <div class="card chart-card">
+        <div class="chart" id="chartEl"><p class="empty">চার্ট তৈরি হচ্ছে…</p></div>
+        <div class="stats num" id="stats">
+          <div><span>সর্বোচ্চ</span><b id="stHi">…</b></div>
+          <div><span>সর্বনিম্ন</span><b id="stLo">…</b></div>
+          <div><span>এই সময়ে পরিবর্তন</span><b id="stChg">…</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="itihas" aria-labelledby="h-it">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="h-it">বাজুসের সাম্প্রতিক দর পরিবর্তন</h2>
+          <p class="sub">২২ ক্যারেট সোনা, প্রতি ভরি। নতুন ঘোষণা এলে তালিকাটি নিজে থেকে হালনাগাদ হয়।</p>
+        </div>
+      </div>
+      <div class="table-wrap narrow">
+        <table>
+          <thead><tr><th scope="col">কার্যকর তারিখ</th><th scope="col">দাম (প্রতি ভরি)</th><th scope="col">পরিবর্তন</th></tr></thead>
+          <tbody id="histRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="hisab" aria-labelledby="h-hs">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="h-hs">গয়নার দাম হিসাব করুন</h2>
+          <p class="sub">ওজন, মান আর মজুরি দিন। বাজুসের আজকের দরে মোট দাম দেখাবে।</p>
+        </div>
+      </div>
+      <div class="calc">
+        <div class="card form">
+          <div class="field"><label for="cBhori">ভরি</label><input id="cBhori" name="bhori" type="number" inputmode="decimal" min="0" step="1" value="1" autocomplete="off"></div>
+          <div class="field"><label for="cAna">আনা</label><input id="cAna" name="ana" type="number" inputmode="numeric" min="0" max="15" step="1" value="0" autocomplete="off"></div>
+          <div class="field"><label for="cRati">রতি</label><input id="cRati" name="rati" type="number" inputmode="numeric" min="0" max="5" step="1" value="0" autocomplete="off"></div>
+          <div class="field wide"><label for="cKarat">মান</label>
+            <select id="cKarat" name="karat"><option value="k22">২২ ক্যারেট</option><option value="k21">২১ ক্যারেট</option><option value="k18">১৮ ক্যারেট</option><option value="trad">সনাতন পদ্ধতি</option></select>
+          </div>
+          <div class="field"><label for="cMake">মজুরি (%)</label><input id="cMake" name="making" type="number" inputmode="decimal" min="0" step="0.5" value="6" autocomplete="off"></div>
+        </div>
+        <div class="card summary" aria-live="polite">
+          <h3>হিসাবের সারাংশ</h3>
+          <dl class="num">
+            <dt>ওজন</dt><dd id="rWv">…</dd>
+            <dt>সোনার দাম</dt><dd id="rGold">…</dd>
+            <dt>মজুরি</dt><dd id="rMake">…</dd>
+            <dt class="total">মোট</dt><dd class="total" id="rTotal">…</dd>
+          </dl>
+          <p class="note">১ ভরি = ১৬ আনা = ৯৬ রতি = ১১.৬৬৪ গ্রাম।</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="prosno" aria-labelledby="h-faq">
+    <div class="container">
+      <div class="section-head"><div><h2 id="h-faq">সাধারণ প্রশ্নোত্তর</h2></div></div>
+      <div class="faq">
+        <details><summary>বাংলাদেশে সোনার দাম কে ঠিক করে?<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7.5l5 5 5-5"/></svg></summary><p>বাংলাদেশ জুয়েলার্স সমিতি (বাজুস)। স্থানীয় বাজারে তেজাবি অর্থাৎ খাঁটি সোনার দাম আর বিশ্ববাজার দেখে তারা দাম ঘোষণা করে। নতুন ঘোষণা না আসা পর্যন্ত আগের দামই চলে, তাই দেশের দাম মিনিটে মিনিটে বদলায় না।</p></details>
+        <details><summary>বিশ্ববাজারের দাম তো প্রতি মিনিটে বদলায়, এখানে দেশের দাম কীভাবে “এখন” দেখাচ্ছে?<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7.5l5 5 5-5"/></svg></summary><p>বাজুস যেদিন শেষবার দাম ঠিক করেছে, সেদিন বিশ্ববাজারে দাম কত ছিল তা আমরা জানি। এখন সেই দাম আর ডলারের রেট যত শতাংশ বদলেছে, বাজুসের দরকে সেই অনুপাতে বাড়িয়ে বা কমিয়ে আনুমানিক দাম দেখানো হয়। পার্থক্য বড় হলে সাধারণত বাজুসও কিছুদিনের মধ্যে দাম সমন্বয় করে।</p></details>
+        <details><summary>এক ভরি কত গ্রাম? আনা আর রতি কী?<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7.5l5 5 5-5"/></svg></summary><p>এক ভরি ১১.৬৬৪ গ্রাম। এক ভরিতে ১৬ আনা, আর এক আনায় ৬ রতি। অর্থাৎ এক আনা প্রায় ০.৭৩ গ্রাম, এক রতি প্রায় ০.১২ গ্রাম।</p></details>
+        <details><summary>বিশ্ববাজারের দাম টাকায় হিসাব করলে দেশের দামের চেয়ে কম দেখায় কেন?<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7.5l5 5 5-5"/></svg></summary><p>বিশ্ববাজারের দাম শুধু খাঁটি সোনার কাঁচা দাম। দেশের দামে আমদানি ও পরিশোধন খরচ, ভ্যাট আর ব্যবসায়ীদের খরচ যোগ হয়। তাই দুটো সরাসরি মেলে না; এখানে তুলনা করা হয় কতটা বদলেছে তা দিয়ে।</p></details>
+        <details><summary>দাম বাড়বে নাকি কমবে, এই সংকেত কতটা নির্ভরযোগ্য?<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7.5l5 5 5-5"/></svg></summary><p>এটি চারটি পরিচিত হিসাব মিলিয়ে তৈরি: সাম্প্রতিক গড় দামের প্রবণতা, ৫ দিনের গতি, অতিরিক্ত কেনা-বেচার সূচক (আরএসআই) আর আজকের ওঠানামা। এগুলো আগের দামের ধরন দেখায়, ভবিষ্যৎ নিশ্চিত করে না। হঠাৎ কোনো খবরে বাজার উল্টো দিকে যেতে পারে, তাই এটি পরামর্শ নয়, একটি ইঙ্গিত মাত্র।</p></details>
+        <details><summary>কত ঘন ঘন দাম আপডেট হয়?<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7.5l5 5 5-5"/></svg></summary><p>পাতা খোলা থাকলে বিশ্ববাজারের দাম প্রতি মিনিটে আর ডলারের রেট প্রতি ১৫ মিনিটে নিজে থেকে আপডেট হয়। বাজুস নতুন দাম ঘোষণা করলে সাধারণত ২০ থেকে ৪০ মিনিটের মধ্যে দেশের দামও নিজে থেকে বদলে যায়; পাতা আবার খুলতেও হয় না।</p></details>
+      </div>
+      <div class="share">
+        <span>পাতাটি শেয়ার করুন:</span>
+        <a class="btn" id="shareFb" href="#" target="_blank" rel="noopener">ফেসবুক</a>
+        <a class="btn" id="shareWa" href="#" target="_blank" rel="noopener">হোয়াটসঅ্যাপ</a>
+        <button class="btn" id="copyLink" type="button">লিংক কপি করুন</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="about">
+        <a class="logo" href="./" aria-label="সোনার দর, প্রথম পাতা"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1A1D21"/><path d="M7 22h18l-2.6-6H9.6z" fill="#D9A93C"/><path d="M11.2 14.5h9.6l-1.8-4.5h-6z" fill="#E9C46A"/></svg><span>সোনার দর</span></a>
+        <p>বাংলাদেশে সোনার দাম ও বিশ্ববাজারের দর, এক জায়গায়। এই সাইটের তথ্য শুধু জানার জন্য, আর্থিক পরামর্শ নয়।</p>
+      </div>
+      <div>
+        <h3>এই পাতায়</h3>
+        <ul><li><a href="#dam">আজকের দাম</a></li><li><a href="#songket">বাজারের গতি</a></li><li><a href="#chart">চার্ট</a></li><li><a href="#hisab">দাম হিসাব</a></li></ul>
+      </div>
+      <div>
+        <h3>তথ্যের উৎস</h3>
+        <ul><li><a href="https://www.bajus.org/gold-price/" rel="noopener">বাংলাদেশ জুয়েলার্স সমিতি</a></li><li><a href="https://gold-api.com" rel="noopener" translate="no">gold-api.com</a></li><li><a href="https://www.exchangerate-api.com" rel="noopener" translate="no">ExchangeRate-API</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span id="copyright">© সোনার দর</span>
+      <span id="footUpdated"></span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
