@@ -2,6 +2,7 @@
 // Node 20+, কোনো প্যাকেজ লাগে না।  চালাতে: node scripts/update-bajus.mjs
 // হাতে দাম বসাতে: MANUAL_K22=... MANUAL_K21=... MANUAL_K18=... MANUAL_TRAD=... node scripts/update-bajus.mjs
 import { readFile, writeFile, appendFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 
 const DATA = new URL("../assets/data/bajus.json", import.meta.url);
 const G_BHORI = 11.664;
@@ -10,10 +11,9 @@ const BAJUS_PAGES = [
   "https://www.bajus.org/gold-price/",
   "https://bajus.org/index.php/memberinfo/standing-committee/pricing-and-price-monitoring"
 ];
-// bajus.org অনেক সময় GitHub-এর সার্ভার ব্লক করে; তখন r.jina.ai রিডারের মাধ্যমে একই পেজ পড়া হয়।
+// bajus.org সাধারণ fetch-কে Cloudflare দিয়ে আটকায়; আসল পথ হলো ব্রাউজার (scripts/bajus-browser.mjs)।
 const SOURCES = [
   ...BAJUS_PAGES.map(url => ({ name: "bajus.org", url, official: true })),
-  ...BAJUS_PAGES.map(url => ({ name: "bajus.org (রিডার)", url: "https://r.jina.ai/" + url, official: true })),
   { name: "goldpricebd.bd", url: "https://goldpricebd.bd/" },
   { name: "gold-bd.com", url: "https://gold-bd.com/" },
   { name: "goldbd.org", url: "https://goldbd.org/gold-price/" },
@@ -109,7 +109,18 @@ function manualInput() {
   return { name: "বাজুস (হাতে হালনাগাদ)", official: true, p };
 }
 
+async function fromBrowser() {
+  const f = process.env.BAJUS_BROWSER_FILE;
+  if (!f || !existsSync(f)) { console.log("✘ bajus.org (ব্রাউজার): পেজ পাওয়া যায়নি"); return null; }
+  const p = extract(await readFile(f, "utf8"));
+  if (p && valid(p)) { console.log(`✔ bajus.org (ব্রাউজার): ${JSON.stringify(p)}`); return { name: "bajus.org", official: true, p }; }
+  console.log("✘ bajus.org (ব্রাউজার): পেজ খুলেছে কিন্তু দাম বের করা যায়নি");
+  return null;
+}
+
 async function scrape() {
+  const browser = await fromBrowser();
+  if (browser) return { chosen: browser };
   const results = await Promise.all(SOURCES.map(async s => {
     try {
       const html = await get(s.url);
