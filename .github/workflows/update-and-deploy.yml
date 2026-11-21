@@ -2,7 +2,7 @@ name: বাজুস দাম হালনাগাদ ও সাইট প্
 
 on:
   schedule:
-    - cron: "*/20 * * * *"     # প্রতি ২০ মিনিটে বাজুসের দাম যাচাই (GitHub কখনো কয়েক মিনিট দেরি করে)
+    - cron: "*/05 * * * *"     # প্রতি ২০ মিনিটে বাজুসের দাম যাচাই (GitHub কখনো কয়েক মিনিট দেরি করে)
   push:
     branches: [main]
   workflow_dispatch:
@@ -39,32 +39,9 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      - name: আসল ব্রাউজারে বাজুসের পেজ খোলা
-        id: browser
-        continue-on-error: true
-        timeout-minutes: 4
-        env:
-          BAJUS_BROWSER_FILE: /tmp/bajus-browser.txt
-        run: |
-          npm install --no-save --no-package-lock --no-audit --no-fund playwright-core@1.49.1
-          if command -v xvfb-run >/dev/null; then
-            xvfb-run -a node scripts/bajus-browser.mjs
-          else
-            node scripts/bajus-browser.mjs
-          fi
-      - name: ব্রাউজার ব্যর্থ হলে স্ক্রিনশট রাখা
-        if: steps.browser.outputs.ok != 'true'
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
-          name: bajus-screenshot-${{ github.run_id }}
-          path: /tmp/bajus-browser.png
-          retention-days: 3
-          if-no-files-found: ignore
       - name: বাজুসের দাম আনা
         id: bajus
         env:
-          BAJUS_BROWSER_FILE: /tmp/bajus-browser.txt
           MANUAL_K22: ${{ github.event.inputs.k22 }}
           MANUAL_K21: ${{ github.event.inputs.k21 }}
           MANUAL_K18: ${{ github.event.inputs.k18 }}
