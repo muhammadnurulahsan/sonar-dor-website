@@ -6,6 +6,19 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      k22:
+        description: "২২ ক্যারেট (ভরি) — খালি রাখলে বাজুস থেকে নিজে আনবে"
+        required: false
+      k21:
+        description: "২১ ক্যারেট (ভরি)"
+        required: false
+      k18:
+        description: "১৮ ক্যারেট (ভরি)"
+        required: false
+      trad:
+        description: "সনাতন পদ্ধতি (ভরি)"
+        required: false
 
 permissions:
   contents: write
@@ -22,12 +35,17 @@ jobs:
     outputs:
       changed: ${{ steps.bajus.outputs.changed }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
       - name: বাজুসের দাম আনা
         id: bajus
+        env:
+          MANUAL_K22: ${{ github.event.inputs.k22 }}
+          MANUAL_K21: ${{ github.event.inputs.k21 }}
+          MANUAL_K18: ${{ github.event.inputs.k18 }}
+          MANUAL_TRAD: ${{ github.event.inputs.trad }}
         run: node scripts/update-bajus.mjs
       - name: নতুন দাম সেভ করা
         if: steps.bajus.outputs.changed == 'true'
@@ -36,7 +54,8 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add assets/data/bajus.json
           git commit -m "বাজুসের নতুন দাম $(TZ=Asia/Dhaka date '+%Y-%m-%d %H:%M')"
-          git push
+          git pull --rebase origin main
+          git push origin HEAD:main
 
   deploy:
     needs: update
@@ -46,7 +65,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: main
       - name: সাইটের ফাইল আলাদা করা
