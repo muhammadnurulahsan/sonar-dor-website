@@ -6,6 +6,7 @@ import { readFile, writeFile, appendFile } from "node:fs/promises";
 const DATA = new URL("../assets/data/bajus.json", import.meta.url);
 const G_BHORI = 11.664;
 const BAJUS_PAGES = [
+  "https://bajus.org/gold-price",
   "https://www.bajus.org/gold-price/",
   "https://bajus.org/index.php/memberinfo/standing-committee/pricing-and-price-monitoring"
 ];
