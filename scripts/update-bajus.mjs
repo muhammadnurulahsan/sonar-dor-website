@@ -2,7 +2,6 @@
 // Node 20+, কোনো প্যাকেজ লাগে না।  চালাতে: node scripts/update-bajus.mjs
 // হাতে দাম বসাতে: MANUAL_K22=... MANUAL_K21=... MANUAL_K18=... MANUAL_TRAD=... node scripts/update-bajus.mjs
 import { readFile, writeFile, appendFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
 
 const DATA = new URL("../assets/data/bajus.json", import.meta.url);
 const G_BHORI = 11.664;
@@ -11,7 +10,8 @@ const BAJUS_PAGES = [
   "https://www.bajus.org/gold-price/",
   "https://bajus.org/index.php/memberinfo/standing-committee/pricing-and-price-monitoring"
 ];
-// bajus.org সাধারণ fetch-কে Cloudflare দিয়ে আটকায়; আসল পথ হলো ব্রাউজার (scripts/bajus-browser.mjs)।
+// bajus.org GitHub-এর সার্ভার Cloudflare দিয়ে আটকায় (403); কখনো খুলে গেলে সেটাই আগে মানা হবে।
+// না খুললে ব্যাকআপ সাইটগুলোর অন্তত ২টিতে একই দাম থাকলে সেটা নেওয়া হয় (কয়েক ঘণ্টা দেরি হতে পারে)।
 const SOURCES = [
   ...BAJUS_PAGES.map(url => ({ name: "bajus.org", url, official: true })),
   { name: "goldpricebd.bd", url: "https://goldpricebd.bd/" },
@@ -109,18 +109,7 @@ function manualInput() {
   return { name: "বাজুস (হাতে হালনাগাদ)", official: true, p };
 }
 
-async function fromBrowser() {
-  const f = process.env.BAJUS_BROWSER_FILE;
-  if (!f || !existsSync(f)) { console.log("✘ bajus.org (ব্রাউজার): পেজ পাওয়া যায়নি"); return null; }
-  const p = extract(await readFile(f, "utf8"));
-  if (p && valid(p)) { console.log(`✔ bajus.org (ব্রাউজার): ${JSON.stringify(p)}`); return { name: "bajus.org", official: true, p }; }
-  console.log("✘ bajus.org (ব্রাউজার): পেজ খুলেছে কিন্তু দাম বের করা যায়নি");
-  return null;
-}
-
 async function scrape() {
-  const browser = await fromBrowser();
-  if (browser) return { chosen: browser };
   const results = await Promise.all(SOURCES.map(async s => {
     try {
       const html = await get(s.url);
@@ -153,14 +142,19 @@ export async function main() {
   if (chosen) console.log("হাতে দেওয়া দাম ব্যবহার হচ্ছে:", JSON.stringify(chosen.p));
   else ({ chosen, votes = 0 } = await scrape());
 
+  // বর্তমান দামটা বাজুস থেকে বা হাতে বসানো হলে সেটা "অফিশিয়াল"
+  const curOfficial = data.current.official ?? /bajus|বাজুস/i.test(data.current.source || "");
   let changed = false;
   if (!chosen) console.log("কোনো নির্ভরযোগ্য দাম পাওয়া যায়নি; আগের দাম রাখা হলো।");
   else if (!chosen.official && Math.abs(chosen.p.k22 / cur.k22 - 1) > 0.2) console.log("দামের পরিবর্তন অস্বাভাবিক বড়; বাদ দেওয়া হলো।");
+  else if (!chosen.official && curOfficial && Date.now() - Date.parse(data.current.updatedAt) < 36 * 3600e3
+           && data.history.slice(0, -1).some(h => h.k22 === chosen.p.k22))
+    console.log(`ব্যাকআপ সাইটগুলো এখনও পুরোনো দাম (${chosen.p.k22}) দেখাচ্ছে; বাজুস/হাতে বসানো দাম ${cur.k22} রাখা হলো।`);
   else if (!chosen.official && votes < 3 && data.history.length >= 2 && data.history[data.history.length - 2].k22 === chosen.p.k22)
     console.log("মাত্র ২টি সাইট আগের দিনের দাম দেখাচ্ছে (সম্ভবত পুরোনো); আগের দাম রাখা হলো।");
   else if (KEYS.some(k => chosen.p[k] !== cur[k])) {
     const now = new Date();
-    data.current = { date: dhaka(now), updatedAt: now.toISOString(), source: chosen.name, perBhori: chosen.p, ref: await marketRef() };
+    data.current = { date: dhaka(now), updatedAt: now.toISOString(), source: chosen.name, official: !!chosen.official, perBhori: chosen.p, ref: await marketRef() };
     data.history = data.history.filter(h => h.date !== data.current.date);
     data.history.push({ date: data.current.date, k22: chosen.p.k22 });
     data.history = data.history.slice(-60);
