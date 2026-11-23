@@ -1,18 +1,18 @@
 {
   "current": {
-    "date": "2026-11-22",
-    "updatedAt": "2026-11-21T22:23:20.817Z",
-    "source": "goldpricebd.bd + gold-bd.com + goldr.org",
+    "date": "2026-11-23",
+    "updatedAt": "2026-11-23T12:51:57.889Z",
+    "source": "goldpricebd.bd + gold-bd.com + goldbd.org + alaminjewellers.com + goldr.org",
     "official": false,
     "perBhori": {
-      "k22": 194964,
-      "k21": 186216,
-      "k18": 159972,
-      "trad": 130345
+      "k22": 198113,
+      "k21": 189190,
+      "k18": 162538,
+      "trad": 132445
     },
     "ref": {
-      "usd": 3539,
-      "fx": 124.415609
+      "usd": 3618.449951,
+      "fx": 124.425063
     }
   },
   "history": [
@@ -59,6 +59,10 @@
     {
       "date": "2026-11-22",
       "k22": 194964
+    },
+    {
+      "date": "2026-11-23",
+      "k22": 198113
     }
   ]
 }
